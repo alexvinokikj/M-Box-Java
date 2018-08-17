@@ -1,4 +1,4 @@
-package com.music.demo;
+package com.app.MBox;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
