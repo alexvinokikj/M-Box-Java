@@ -9,7 +9,7 @@ public class userRoles {
 
 private int id;
 
-private user user;
+private users users;
 
 private role role;
 
@@ -22,7 +22,7 @@ private Date dateCreated;
 private Date dateModified;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     public int getId() {
         return id;
@@ -32,16 +32,16 @@ private Date dateModified;
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userId")
-    public user getUser() {
-        return user;
+    public users getUsers() {
+        return users;
     }
 
-    public void setUser(user user) {
-        this.user = user;
+    public void setUsers(users users) {
+        this.users = users;
     }
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="roleId")
     public role getRole() {
         return role;
@@ -83,5 +83,9 @@ private Date dateModified;
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public userRoles() {
+
     }
 }

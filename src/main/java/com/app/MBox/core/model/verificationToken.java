@@ -10,7 +10,7 @@ public class verificationToken {
 
     private int id;
 
-    private user user;
+    private users users;
 
     private String token;
 
@@ -33,14 +33,14 @@ public class verificationToken {
         this.id = id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="userId")
-    public com.app.MBox.core.model.user getUser() {
-        return user;
+    public users getUsers() {
+        return users;
     }
 
-    public void setUser(com.app.MBox.core.model.user user) {
-        this.user = user;
+    public void setUsers(users users) {
+        this.users = users;
     }
 
     public String getToken() {
@@ -83,5 +83,9 @@ public class verificationToken {
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public verificationToken() {
+
     }
 }

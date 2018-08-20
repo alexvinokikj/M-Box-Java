@@ -36,7 +36,7 @@ public class song {
     private Date dateModified;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     public int getId() {
         return id;
@@ -148,7 +148,7 @@ public class song {
         this.dateModified = dateModified;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "artistId")
     public com.app.MBox.core.model.artist getArtist() {
         return artist;
@@ -156,6 +156,10 @@ public class song {
 
     public void setArtist(com.app.MBox.core.model.artist artist) {
         this.artist = artist;
+    }
+
+    public song () {
+
     }
 
 }

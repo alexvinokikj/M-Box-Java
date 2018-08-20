@@ -3,15 +3,17 @@ package com.app.MBox.core.model;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
+@Table
 @Inheritance(strategy = InheritanceType.JOINED)
-public class user {
+public class users implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     public int getId() {
         return id;
@@ -122,7 +124,7 @@ public class user {
 
     private Set<verificationToken> tokens;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL)
     public Set<com.app.MBox.core.model.userRoles> getUserRoles() {
         return userRoles;
     }
@@ -133,12 +135,16 @@ public class user {
 
     private Set<userRoles> userRoles;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL)
     public Set<verificationToken> getTokens() {
         return tokens;
     }
 
     public void setTokens(Set<verificationToken> tokens) {
         this.tokens = tokens;
+    }
+
+    public users() {
+
     }
 }

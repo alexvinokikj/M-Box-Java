@@ -1,11 +1,11 @@
 package com.app.MBox.core.model;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
-public class recordLabel extends user {
+@PrimaryKeyJoinColumn(referencedColumnName = "id")
+public class recordLabel extends users {
 
     private String aboutInfo;
 
@@ -20,12 +20,15 @@ public class recordLabel extends user {
         this.aboutInfo = aboutInfo;
     }
 
-    @OneToMany(mappedBy = "recordLabel")
+    @OneToMany(mappedBy = "recordLabel",cascade = CascadeType.ALL)
     public Set<com.app.MBox.core.model.recordLabelArtists> getRecordLabelArtists() {
         return recordLabelArtists;
     }
 
     public void setRecordLabelArtists(Set<com.app.MBox.core.model.recordLabelArtists> recordLabelArtists) {
         this.recordLabelArtists = recordLabelArtists;
+    }
+
+    public recordLabel() {
     }
 }

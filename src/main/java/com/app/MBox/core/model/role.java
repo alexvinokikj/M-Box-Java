@@ -84,4 +84,8 @@ public class role {
     public void setUserRoles(Set<com.app.MBox.core.model.userRoles> userRoles) {
         this.userRoles = userRoles;
     }
+
+    public role () {
+
+    }
 }

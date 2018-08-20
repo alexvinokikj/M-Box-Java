@@ -24,7 +24,7 @@ public class recordLabelArtists {
     private Date dateModified;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     public int getId() {
         return id;
@@ -35,8 +35,7 @@ public class recordLabelArtists {
     }
 
     //it is possible that ManyToOne should be up at the propertyyy
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="recordLabelId")
+    @ManyToOne(cascade = CascadeType.ALL)
     public recordLabel getRecordLabel() {
         return recordLabel;
     }
@@ -86,5 +85,9 @@ public class recordLabelArtists {
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public recordLabelArtists () {
+
     }
 }

@@ -1,9 +1,6 @@
 package com.app.MBox.core.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -27,7 +24,7 @@ public class emailTemplate {
     private Date dateModified;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     public int getId() {
         return id;
@@ -95,5 +92,8 @@ public class emailTemplate {
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public emailTemplate() {
     }
 }

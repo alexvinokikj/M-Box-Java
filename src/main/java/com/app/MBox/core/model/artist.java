@@ -1,11 +1,11 @@
 package com.app.MBox.core.model;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
-public class artist extends user {
+@PrimaryKeyJoinColumn(referencedColumnName = "id")
+public class artist extends users {
 
     private String bio;
 
@@ -30,13 +30,16 @@ public class artist extends user {
         this.isDeleted = isDeleted;
     }
 
-    @OneToMany(mappedBy = "artist")
+    @OneToMany(mappedBy = "artist",cascade = CascadeType.ALL)
     public Set<song> getSongs() {
         return songs;
     }
 
     public void setSongs(Set<song> songs) {
         this.songs = songs;
+    }
+
+    public artist() {
     }
 }
 
