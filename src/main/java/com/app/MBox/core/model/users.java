@@ -1,5 +1,7 @@
 package com.app.MBox.core.model;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -77,7 +79,7 @@ public class users implements Serializable {
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
     }
-
+    @Nullable
     public int getModifiedBy() {
         return modifiedBy;
     }

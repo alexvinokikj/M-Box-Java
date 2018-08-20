@@ -123,6 +123,7 @@ public class song {
         this.createdBy = createdBy;
     }
 
+    @Column(nullable = true)
     public int getModifiedBy() {
         return modifiedBy;
     }

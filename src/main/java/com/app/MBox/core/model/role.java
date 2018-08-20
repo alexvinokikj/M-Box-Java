@@ -1,5 +1,7 @@
 package com.app.MBox.core.model;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -51,6 +53,7 @@ public class role {
         this.createdBy = createdBy;
     }
 
+    @Nullable
     public int getModifiedBy() {
         return modifiedBy;
     }

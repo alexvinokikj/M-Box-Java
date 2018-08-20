@@ -1,5 +1,7 @@
 package com.app.MBox.core.model;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -60,6 +62,7 @@ private Date dateModified;
         this.createdBy = createdBy;
     }
 
+    @Column(nullable = true)
     public int getModifiedBy() {
         return modifiedBy;
     }

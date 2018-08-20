@@ -1,6 +1,8 @@
 package com.app.MBox.core.model;
 
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -76,7 +78,7 @@ public class verificationToken {
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
-
+    @Nullable
     public Date getDateModified() {
         return dateModified;
     }

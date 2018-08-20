@@ -1,6 +1,7 @@
 package com.app.MBox.core.model;
 
 import org.hibernate.engine.internal.Cascade;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -61,7 +62,7 @@ public class recordLabelArtists {
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
     }
-
+    @Nullable
     public int getModifiedBy() {
         return modifiedBy;
     }
