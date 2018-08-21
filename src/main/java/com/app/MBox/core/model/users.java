@@ -14,9 +14,10 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table
-@Inheritance(strategy = InheritanceType.JOINED)
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(uniqueConstraints =@UniqueConstraint(name = "UC_users_picture", columnNames = "picture") )
 @EntityListeners(AuditingEntityListener.class)
 public class users extends audit implements Serializable {
 
@@ -29,7 +30,7 @@ public class users extends audit implements Serializable {
     @Email
     private String email;
 
-    @Column(nullable = false,length = 50,unique = true)
+    @Column(nullable = false,length = 50)
     private String picture;
 
     @Column(nullable = false,length = 50)

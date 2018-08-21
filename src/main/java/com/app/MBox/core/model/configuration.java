@@ -11,7 +11,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(uniqueConstraints =@UniqueConstraint(name = "UC_configuration_key", columnNames = "key") )
 @EntityListeners(AuditingEntityListener.class)
 public class configuration extends audit {
 
@@ -20,7 +23,7 @@ public class configuration extends audit {
     @Column(nullable = false)
     private int id;
 
-    @Column(length=100,unique = true)
+    @Column(length=100)
     private String key;
 
     private String value;

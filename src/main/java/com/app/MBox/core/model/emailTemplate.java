@@ -11,7 +11,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(uniqueConstraints =@UniqueConstraint(name = "UC_emailTemplate_name", columnNames = "name") )
 @EntityListeners(AuditingEntityListener.class)
 public class emailTemplate extends audit {
     @Id
@@ -19,7 +22,7 @@ public class emailTemplate extends audit {
     @Column(nullable = false)
     private int id;
 
-    @Column(length = 50,unique = true,nullable = false)
+    @Column(length = 50,nullable = false)
     private String name;
 
     @Column(length = 50)

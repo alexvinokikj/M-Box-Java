@@ -12,7 +12,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class recordLabelArtists extends audit {
     @Id
@@ -21,9 +23,11 @@ public class recordLabelArtists extends audit {
     private int id;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "recordLabelId" , foreignKey = @ForeignKey(name = "FK_recordLabelArtists_recordLabel"))
     private recordLabel recordLabel;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name="artistId" , foreignKey = @ForeignKey(name = "FK_recordLabelArtist_artist"))
     private artist artist;
 
 

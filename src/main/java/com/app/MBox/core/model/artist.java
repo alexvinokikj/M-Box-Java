@@ -9,21 +9,25 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@PrimaryKeyJoinColumn(referencedColumnName = "id")
-@Getter @Setter
+@Getter
+@Setter
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class artist extends users {
+public class artist {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private int id;
     @Column(length = 500)
     private String bio;
     @Column(nullable = false)
     private boolean isDeleted;
     @OneToMany(mappedBy = "artist",cascade = CascadeType.ALL)
     private Set<song> songs;
-
-    public artist () {
-        super();
-    }
+    @OneToOne
+    @JoinColumn(name="userId" , foreignKey = @ForeignKey(name = "FK_artist_user"))
+    private users user;
 
 }
 

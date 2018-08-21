@@ -12,7 +12,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class verificationToken extends audit {
 
@@ -22,7 +24,7 @@ public class verificationToken extends audit {
     private int id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="userId")
+    @JoinColumn(name="userId" , foreignKey = @ForeignKey(name = "FK_verificationToken_user"))
     private users user;
 
     private String token;

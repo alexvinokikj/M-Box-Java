@@ -10,7 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(uniqueConstraints =@UniqueConstraint(name = "UC_song_image", columnNames = "image") )
 @EntityListeners(AuditingEntityListener.class)
 public class song extends audit {
     @Id
@@ -26,7 +29,7 @@ public class song extends audit {
 
     private String lyrics;
 
-    @Column(length = 50,unique = true)
+    @Column(length = 50)
     private String image;
 
     private Date dateOfRelease;
@@ -40,7 +43,7 @@ public class song extends audit {
     private String genre;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "artistId")
+    @JoinColumn(name = "artistId",foreignKey = @ForeignKey(name = "FK_song_artist"))
     private artist artist;
 
 

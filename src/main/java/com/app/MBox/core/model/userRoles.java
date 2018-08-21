@@ -11,7 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class userRoles extends audit {
     @Id
@@ -20,11 +22,11 @@ public class userRoles extends audit {
     private int id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="userId")
+    @JoinColumn(name="userId" , foreignKey = @ForeignKey(name = "FK_user_userRoles") )
     private users user;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="roleId")
+    @JoinColumn(name="roleId" , foreignKey = @ForeignKey(name = "FK_role_userRoles"))
     private role role;
 
 
