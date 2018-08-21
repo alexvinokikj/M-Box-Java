@@ -1,46 +1,30 @@
 package com.app.MBox.core.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @PrimaryKeyJoinColumn(referencedColumnName = "id")
+@Getter @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class artist extends users {
 
+    @Column(length = 500)
     private String bio;
-
+    @Column(nullable = false)
     private boolean isDeleted;
-
+    @OneToMany(mappedBy = "artist",cascade = CascadeType.ALL)
     private Set<song> songs;
 
-    @Column(length = 500)
-    public String getBio() {
-        return bio;
+    public artist () {
+        super();
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-    @Column(nullable = false)
-    public boolean getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
-    @OneToMany(mappedBy = "artist",cascade = CascadeType.ALL)
-    public Set<song> getSongs() {
-        return songs;
-    }
-
-    public void setSongs(Set<song> songs) {
-        this.songs = songs;
-    }
-
-    public artist() {
-    }
 }
 
 
