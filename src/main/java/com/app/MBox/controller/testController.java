@@ -13,4 +13,10 @@ public String test() {
     return "test";
 }
 
+@RequestMapping(value = "/test")
+    public String test1() {
+        //System.out.println("something");
+        return "dropDownMenu";
+    }
+
 }
