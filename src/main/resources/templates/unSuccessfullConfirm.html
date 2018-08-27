@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/jdbc">
+<head>
+    <meta charset="UTF-8">
+    <title>Account confirm page</title>
+</head>
+<body>
+
+    <h1>Your link has expired!</h1>
+    <h1>Please register again!</h1>
+
+    <input type="button" onclick="redirect()" value="Register">
+
+
+    <script th:inline="javascript">
+               /*<![CDATA[*/
+                var serverContext = [[@{/}]];
+                function redirect() {
+
+                window.location.href = serverContext + "registration";
+                }
+        </script>
+
+
+</body>
+</html>

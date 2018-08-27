@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+    <style>
+.password-verdict{
+color:#000;
+}
+</style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
+    <title>Registration form</title>
+</head>
+<body>
+<div class="container">
+    <div >
+        <h1>Registration form</h1>
+        <br/>
+        <form action="#" method="POST" enctype="utf8" th:action="@{/registration}" >
+            <div class="form-group row" >
+                <label class="col-sm-3">Name</label>
+                <span class="col-sm-5"><input class="form-control" name="name" value="" required="required"/></span>
+                <span id="firstNameError" class="alert alert-danger col-sm-4" style="display:none"></span>
+
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3">Email</label>
+                <span class="col-sm-5"><input type="email" class="form-control" name="email" value="" required="required"/></span>
+                <span id="emailError" class="alert alert-danger col-sm-4" style="display:none"></span>
+
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3">Password</label>
+                <span class="col-sm-5"><input id="password" class="form-control" name="password" value="" type="password" required="required"/></span>
+                <span id="passwordError" class="alert alert-danger col-sm-4" style="display:none"></span>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3">Confirm Password</label>
+                <span class="col-sm-5"><input id="matchPassword" class="form-control" name="matchingPassword" value="" type="password" required="required"/></span>
+                <span id="globalError" class="alert alert-danger col-sm-4" style="display:none"></span>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <br/>
+        <a th:href="@{/login}" >Go to login page</a>
+    </div>
+</div>
+
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+var serverContext = [[@{/}]];
+$(document).ready(function () {
+	$('form').submit(function(event) {
+		register(event);
+	});
+
+	$(":password").keyup(function(){
+		if($("#password").val() != $("#matchPassword").val()){
+	        $("#globalError").show().html("Passwords does not match");
+	    }else{
+	    	$("#globalError").html("").hide();
+	    }
+	});
+
+});
+function register(event){
+	event.preventDefault();
+
+    if (checkPwd($("#password").val())==0) {
+        $("#globalError").show().html("Your password must contain least 8 characters and be alphanumeric");
+    	return;
+    }
+
+    $(".alert").html("").hide();
+    $(".error-list").html("");
+    if($("#password").val() != $("#matchPassword").val()){
+    	$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+    	return;
+    }
+    var formData= $('form').serialize();
+    $.post(serverContext + "registration",formData ,function(data){
+        console.log(data);
+        if(data == "test"){
+            window.location.href = serverContext + "successRegister";
+        } else {
+
+                        $("#emailError").show().html("User already exists");
+        }
+
+    })
+
+    function checkPwd(str) {
+    if (str.length < 8) {
+        return 0;
+    } else if (str.length > 50) {
+        return 0;
+    } else if (str.search(/\d/) == -1) {
+       return 0;
+    } else if (str.search(/[a-zA-Z]/) == -1) {
+        return 0;
+    }
+    return 1;
+}
+
+}
+
+/*]]>*/
+
+</script>
+
+
+</body>
+
+</html>

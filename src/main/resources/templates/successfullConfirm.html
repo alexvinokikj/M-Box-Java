@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+        <title>MBox verify</title>
+</head>
+
+<body>
+
+        <h1>Your account has been verified! </h1>
+        <h1>Please continue to the login form </h1>
+
+        <input type="button" onclick="redirect()" value="Log in">
+
+
+        <script th:inline="javascript">
+               /*<![CDATA[*/
+                var serverContext = [[@{/}]];
+                function redirect() {
+
+                window.location.href = serverContext + "login";
+                }
+        </script>
+</body>
+</html>

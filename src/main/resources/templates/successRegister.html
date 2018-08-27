@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/jdbc">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<h1>Verification mail has been sent please follow the instructions to finish registration </h1>
+
+
+
+<input type="button" onclick="redirect()" value="Finish">
+
+
+<script th:inline="javascript">
+               /*<![CDATA[*/
+                var serverContext = [[@{/}]];
+                function redirect() {
+
+                window.location.href = serverContext + "login";
+                }
+        </script>
+
+</body>
+</html>
