@@ -1,6 +1,6 @@
 package com.app.MBox.aditional;
 
-import com.app.MBox.Dto.userDto;
+import com.app.MBox.dto.userDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

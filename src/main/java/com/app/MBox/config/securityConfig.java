@@ -1,22 +1,27 @@
 package com.app.MBox.config;
 
+import com.app.MBox.services.userDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class securityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
+    userDetailsServiceImpl userDetailsServiceImpl;
 
     public void configure (WebSecurity web) throws Exception {
 
-        web.ignoring().antMatchers("/resources/static/**");
+        web.ignoring().antMatchers("/jquery/**/","/bootstrap/**/","/css/**","/images/**","/js/**");
 
 
     }
@@ -25,9 +30,22 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers("/jquery/**/","/bootstrap/**/","/css/**","/images/**","/js/**").permitAll().antMatchers("/registration").permitAll().antMatchers("/successRegister").permitAll()
-                .antMatchers("/","/test").permitAll().antMatchers("/successfullConfirm","/unSuccessfullConfirm").permitAll().antMatchers("/admin").hasAnyRole("ADMIN").anyRequest().authenticated()
-        .and().formLogin().loginPage("/login").permitAll().and().logout().permitAll().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+                .authorizeRequests().antMatchers("jquery/**/","bootstrap/**/","css/**","images/**","js/**").permitAll()
+                .antMatchers("home/jquery/**/","home/bootstrap/**/","home/css/**","home/images/**","home/js/**").permitAll()
+                .antMatchers("/registration","/home/homepage").permitAll().antMatchers("/successRegister").permitAll()
+                .antMatchers("/successfullConfirm","/unSuccessfullConfirm").permitAll()
+                .antMatchers("/admin").hasAnyRole("ADMIN").anyRequest().authenticated()
+                .and().formLogin().loginPage("/login").loginProcessingUrl("/app-login").usernameParameter("app_username").passwordParameter("app_password").defaultSuccessUrl("/home/homepage").permitAll()
+                .and().logout().logoutUrl("/app-logout").logoutSuccessUrl("/login")
+                .and().exceptionHandling().accessDeniedPage("/error");
+
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+
+        BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+        auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(bCryptPasswordEncoder);
 
     }
 

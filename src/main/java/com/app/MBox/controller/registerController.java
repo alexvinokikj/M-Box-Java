@@ -1,9 +1,9 @@
 package com.app.MBox.controller;
 
-import com.app.MBox.Dto.userDto;
+import com.app.MBox.dto.userDto;
 import com.app.MBox.core.model.*;
-import com.app.MBox.services.userService;
-import com.app.MBox.services.verificationTokenService;
+import com.app.MBox.services.userServiceImpl;
+import com.app.MBox.services.verificationTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,10 +26,10 @@ import javax.validation.Valid;
 public class registerController {
 
     @Autowired
-    private userService userService;
+    private userServiceImpl userServiceImpl;
 
     @Autowired
-    private verificationTokenService verificationTokenService;
+    private verificationTokenServiceImpl verificationTokenServiceImpl;
 
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
@@ -65,7 +65,7 @@ public class registerController {
     private users createUserAccount(userDto accountDto, BindingResult result, HttpServletRequest request) {
         users registered = null;
         try {
-            registered = userService.registerNewUserAccount(accountDto,request);
+            registered = userServiceImpl.registerNewUserAccount(accountDto,request);
         } catch (Exception e) {
             return null;
         }
@@ -82,7 +82,7 @@ public class registerController {
     @RequestMapping(value = "/confirm" , method = RequestMethod.GET)
     public String showConfirmationPage(@RequestParam("token") String token) {
 
-        boolean result=verificationTokenService.confirmUser(token);
+        boolean result= verificationTokenServiceImpl.confirmUser(token);
         if(result) {
 
             return "successfullConfirm";

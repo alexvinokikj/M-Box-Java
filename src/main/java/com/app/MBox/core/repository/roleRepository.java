@@ -9,4 +9,5 @@ public interface roleRepository extends CrudRepository <role,Integer> {
 
     role findByName (String name);
 
+    role findById (int id);
 }

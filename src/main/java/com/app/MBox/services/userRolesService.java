@@ -1,33 +1,15 @@
 package com.app.MBox.services;
 
 import com.app.MBox.core.model.userRoles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.app.MBox.core.repository.userRolesRepository;
 
-@Service("userRolesService")
-public class userRolesService {
-    @Autowired
-    private userRolesRepository userRolesRepository ;
+import java.util.Set;
 
+public interface userRolesService {
 
-   // public userRolesService (userRolesRepository userRolesRepository) {
-        //this.userRolesRepository=userRolesRepository;
-    //}
+    public userRoles findByUserId(Integer userId);
 
-    public userRoles findByUserId(Integer userId) {
+    public Set<userRoles> findByRoleId(Integer roleId);
 
-        return userRolesRepository.findByUserId(userId);
-    }
+    public void saveUserRoles(userRoles userRoles);
 
-    public userRoles findByRoleId(Integer roleId) {
-
-        return userRolesRepository.findByRoleId(roleId);
-    }
-
-
-    public void saveUserRoles(userRoles userRoles) {
-
-        userRolesRepository.save(userRoles);
-    }
 }

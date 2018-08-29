@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Spring Boot MVC Security</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/bootstrap/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/bootstrap/bootstrap-theme.css}">
+
+
+    <script th:src="@{jquery/jquery.min.js}"></script>
+    <script th:src="@{bootstrap/bootstrap.min.js}"></script>
+    <script th:src="@{bootstrap/bootstrap.js}"></script>
 </head>
 <body>
+
+
+<header th:insert="shared/header.html :: header"> </header>
+
+
+
+<div sec:authorize="isAuthenticated()">
+    Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
+    <form th:action="@{/app-logout}" method="POST">
+        <input type="submit" value="Logout"/>
+    </form>
+</div> <br/>
+
+<h1>HELOOO FROM HOMEE</h1>
 
 </body>
 </html>

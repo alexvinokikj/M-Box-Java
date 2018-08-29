@@ -1,4 +1,4 @@
-package com.app.MBox.Dto;
+package com.app.MBox.dto;
 
 import com.app.MBox.aditional.passwordMatches;
 import lombok.Getter;
