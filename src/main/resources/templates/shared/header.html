@@ -10,7 +10,9 @@
     <script th:src="@{jquery/jquery.min.js}"></script>
     <script th:src="@{bootstrap/bootstrap.min.js}"></script>
     <script th:src="@{bootstrap/bootstrap.js}"></script>
-
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top" th:fragment="header">
@@ -62,8 +64,11 @@
                                 <i class="fa fa-user-circle" style="font-size:35px; margin-top: 8px; margin-left: 8px"></i>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Dashboard</a></li>
-                                <li><a href="#">Sign Out</a></li>
+                                <li><a th:href="@{/listenerAccount}">My Account</a></li>
+                                <li><a th:href="@{/changePassword}">Change Password</a></li>
+                                <li><a href="javascript:{}" onclick="document.getElementById('form').submit();">Sign out</a></li>
+                                <form id="form" th:action="@{/app-logout}" method="POST">
+                                </form>
                             </ul>
                         </li>
                     </ul>
@@ -73,6 +78,7 @@
         </div>
     </div>
 </nav>
+
 
 </body>
 </html>
