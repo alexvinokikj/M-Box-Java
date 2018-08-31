@@ -55,7 +55,7 @@
 
             </div>
 
-            <div sec:authorize="isAuthenticated()" class="navbar-right">
+            <div sec:authorize="hasAuthority('LISTENER')" class="navbar-right">
 
                 <div class="collapse navbar-collapse" id="codebrainery-toggle-nav">
                     <ul class="nav navbar-nav navbar-right">

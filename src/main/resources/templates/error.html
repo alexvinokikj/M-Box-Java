@@ -4,6 +4,7 @@
     <title>Spring Boot MVC Security</title>
     <link rel="stylesheet" href="/css/styles.css"/>
 </head>
+<body>
 <h3>Access Denied Exception</h3>
 <div>
     Logged in user: <b th:inline="text"  class="user"> [[${#httpServletRequest.remoteUser}]] </b>
@@ -13,5 +14,6 @@
 </div>
 <p class="error" th:text="${errorMsg}">Error</p>
 <h1>  YOU ARE IN THE ERROR PAGE </h1>
+
 </body>
 </html>

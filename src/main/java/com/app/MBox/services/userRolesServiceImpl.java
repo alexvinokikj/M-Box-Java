@@ -1,6 +1,7 @@
 package com.app.MBox.services;
 
 import com.app.MBox.core.model.userRoles;
+import com.app.MBox.core.model.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.app.MBox.core.repository.userRolesRepository;
@@ -29,5 +30,9 @@ public class userRolesServiceImpl implements userRolesService {
     public void saveUserRoles(userRoles userRoles) {
 
         userRolesRepository.save(userRoles);
+    }
+
+    public void deleteUserRoles(userRoles userRoles) {
+          userRolesRepository.delete(userRoles);
     }
 }

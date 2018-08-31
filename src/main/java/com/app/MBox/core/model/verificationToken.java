@@ -23,7 +23,7 @@ public class verificationToken extends audit {
     @Column(nullable = false)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="userId" , foreignKey = @ForeignKey(name = "FK_verificationToken_user"))
     private users user;
 

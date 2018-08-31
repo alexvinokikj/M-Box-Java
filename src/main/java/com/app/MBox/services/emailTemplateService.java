@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service("emailTemplateService")
 public class emailTemplateService {
+
     @Autowired
     private emailTemplateRepository emailTemplateRepository ;
 
 
-    //public emailTemplateService (emailTemplateRepository emailTemplateRepository) {
-        //this.emailTemplateRepository=emailTemplateRepository;
-   // }
+
 
     public emailTemplate findByName(String name) {
 

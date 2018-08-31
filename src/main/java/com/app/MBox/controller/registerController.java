@@ -61,7 +61,7 @@ public class registerController {
         else {
             return new ModelAndView("success", "user", accountDto);
         }
-        // rest of the implementation
+
     }
     private users createUserAccount(userDto accountDto, BindingResult result, HttpServletRequest request) {
         users registered = null;

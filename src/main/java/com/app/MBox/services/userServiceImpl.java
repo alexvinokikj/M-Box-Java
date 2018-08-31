@@ -4,12 +4,14 @@ package com.app.MBox.services;
 import com.app.MBox.dto.userDto;
 import com.app.MBox.core.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.app.MBox.core.repository.userRepository;
 import com.app.MBox.aditional.rolesEnum;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Service("userServiceImpl")
 public class userServiceImpl implements userService {
@@ -50,7 +52,7 @@ public class userServiceImpl implements userService {
 
             if(findByEmail(accountDto.getEmail())!=null) {
                 throw new Exception(
-                        "There is an account with that email address: "
+                        "User already exists "
                                 +  accountDto.getEmail());
 
             }
@@ -64,33 +66,17 @@ public class userServiceImpl implements userService {
             userRoles.setRole(role);
             userRolesServiceImpl.saveUserRoles(userRoles);
 
-//            verificationToken verificationToken=new verificationToken();
-//            verificationToken.setUser(user);
-//            verificationToken.setToken(UUID.randomUUID().toString());
-//            verificationTokenServiceImpl.saveVerificationToken(verificationToken);
-//            String appUrl=request.getScheme() + "://" + request.getServerName();
-//
-//            emailTemplate emailTemplate=emailTemplateService.findByName("verificationMail");
-//            String body=emailTemplate.getBody();
-//            String [] parts=body.split("<");
-//            body="Dear " + user.getName() + "\n";
-//                for (int i=1 ; i<parts.length ; i++) {
-//                    if(i==parts.length-2) {
-//                        body=body + parts[i] + appUrl + "/confirm?token=" + verificationToken.getToken() + "\n";
-//                    }   else {
-//
-//                        body = body + parts[i] + "\n";
-//                    }
-//                }
-//
-//
-//            SimpleMailMessage registrationEmail = new SimpleMailMessage();
-//            registrationEmail.setTo(user.getEmail());
-//            registrationEmail.setSubject(emailTemplate.getSubject());
-//            registrationEmail.setText(body);
-//            registrationEmail.setFrom("MBox@domain.com");
-//
-//            emailService.sendEmail(registrationEmail);
+            verificationToken verificationToken=new verificationToken();
+            verificationToken.setUser(user);
+            verificationToken.setToken(UUID.randomUUID().toString());
+            verificationTokenServiceImpl.saveVerificationToken(verificationToken);
+            String appUrl=request.getScheme() + "://" + request.getServerName() +":8080"+ "/confirm?token=" + verificationToken.getToken();
+
+            emailTemplate emailTemplate=emailTemplateService.findByName("verificationMail");
+            String newBody=emailTemplate.getBody().replace("[NAME]",user.getName());
+            String body=newBody.replaceAll("href=\"\"","href=\"" + appUrl + "\"");
+           emailService emailService=new emailService();
+            emailService.sendMail("email-smtp.us-east-1.amazonaws.com","587","AKIAJHEYUTQZO5EDB3WA","Akp4SGKhVhC/SAjV+bao5XocI7A+yl7s6/Q7e/Wa3ffR","no-reply@it-labs.com",user.getName(),"altcoding5@gmail.com",emailTemplate.getSubject(),body);
 
 
         return user;
@@ -105,6 +91,28 @@ public class userServiceImpl implements userService {
         user=saveUser(user);
         return user;
 
+    }
+
+
+    public void forgotPassword(users user,HttpServletRequest request) {
+        verificationToken verificationToken=new verificationToken();
+        verificationToken.setUser(user);
+        verificationToken.setToken(UUID.randomUUID().toString());
+        verificationTokenServiceImpl.saveVerificationToken(verificationToken);
+        String appUrl=request.getScheme() + "://" + request.getServerName()+":8080" + "/resetPassword?token=" + verificationToken.getToken();
+        emailTemplate emailTemplate=emailTemplateService.findByName("ForgotPassword");
+        String newBody=emailTemplate.getBody().replace("[NAME]",user.getName());
+        String body=newBody.replace("[APPURL]",appUrl);
+        emailService emailService=new emailService();
+        emailService.sendMail("email-smtp.us-east-1.amazonaws.com","587","AKIAJHEYUTQZO5EDB3WA","Akp4SGKhVhC/SAjV+bao5XocI7A+yl7s6/Q7e/Wa3ffR","no-reply@it-labs.com",user.getName(),"altcoding5@gmail.com",emailTemplate.getSubject(),body);
+
+    }
+
+    public void savePassword(String password, String token) {
+            users user=verificationTokenServiceImpl.findByToken(token);
+            user.setPassword(bCryptPasswordEncoder.encode(password));
+            saveUser(user);
+            verificationTokenServiceImpl.delete(token);
     }
 }
 

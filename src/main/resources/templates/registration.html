@@ -20,6 +20,16 @@ color:#000;
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
     <title>Registration form</title>
+
+    <style>
+        .error {
+        color:red;
+        display: inline-block;
+        margin-left: 28%
+        }
+
+    </style>
+
 </head>
 <body>
 
@@ -47,26 +57,30 @@ color:#000;
         <form action="#" method="POST" enctype="utf8" th:action="@{/registration}" >
             <div class="form-group row" >
                 <label class="col-sm-3">Name</label>
-                <span class="col-sm-5"><input class="form-control" name="name" value="" required="required"/></span>
-                <span id="firstNameError" class="alert alert-danger col-sm-4" style="display:none"></span>
+                <span class="col-sm-5"><input class="form-control" id="name" name="name" value=""/></span>
+                <br>
+                <span id="firstNameError" class="error" style="display:none"></span>
 
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3">Email</label>
-                <span class="col-sm-5"><input type="email" class="form-control" name="email" value="" required="required"/></span>
-                <span id="emailError" class="alert alert-danger col-sm-4" style="display:none"></span>
+                <span class="col-sm-5"><input type="text" class="form-control" id="email" name="email" value=""/></span>
+                <br>
+                <span id="emailError" class="error" style="display:none"></span>
 
             </div>
             <div class="form-group row">
                 <label class="col-sm-3">Password</label>
-                <span class="col-sm-5"><input id="password" class="form-control" name="password" value="" type="password" required="required"/></span>
-                <span id="passwordError" class="alert alert-danger col-sm-4" style="display:none"></span>
+                <span class="col-sm-5"><input id="password" class="form-control" name="password" value="" type="password"/></span>
+                <br>
+                <span id="passwordError" class="error" style="display:none"></span>
             </div>
             <div class="form-group row">
                 <label class="col-sm-3">Confirm Password</label>
-                <span class="col-sm-5"><input id="matchPassword" class="form-control" name="matchingPassword" value="" type="password" required="required"/></span>
-                <span id="globalError" class="alert alert-danger col-sm-4" style="display:none"></span>
+                <span class="col-sm-5"><input id="matchPassword" class="form-control" name="matchingPassword" value="" type="password"/></span>
+                <br>
+                <span id="globalError" class="error" style="display:none"></span>
             </div>
             <br/>
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -81,30 +95,42 @@ color:#000;
 var serverContext = [[@{/}]];
 $(document).ready(function () {
 	$('form').submit(function(event) {
+	$("#firstNameError").show().html("");
+	 $("#emailError").show().html("");
+	 $("#globalError").show().html("");
+	 $("#passwordError").show().html("");
 		register(event);
-	});
-
-	$(":password").keyup(function(){
-		if($("#password").val() != $("#matchPassword").val()){
-	        $("#globalError").show().html("Passwords does not match");
-	    }else{
-	    	$("#globalError").html("").hide();
-	    }
 	});
 
 });
 function register(event){
 	event.preventDefault();
+    counter=0;
+    if ($("#name").val()==0 || $("#name").val()>50) {
+        $("#firstNameError").show().html("Name must be between 1 and 50 characters");
+    	counter++;
+    }
+
+
+     if (checkEmail($("#email").val())==false) {
+        $("#emailError").show().html("Email address not in valid format");
+    	counter++;
+    }
 
     if (checkPwd($("#password").val())==0) {
-        $("#globalError").show().html("Your password must contain least 8 characters and be alphanumeric");
-    	return;
+        $("#passwordError").show().html("Your password must contain least 8 characters and be alphanumeric");
+    	counter++;
+    }
+
+    if(counter>0) {
+
+        return;
     }
 
     $(".alert").html("").hide();
     $(".error-list").html("");
     if($("#password").val() != $("#matchPassword").val()){
-    	$("#globalError").show().html(/*[[#{PasswordMatches.user}]]*/);
+    	$("#globalError").show().html("password does not match");
     	return;
     }
     var formData= $('form').serialize();
@@ -124,13 +150,27 @@ function register(event){
         return 0;
     } else if (str.length > 50) {
         return 0;
-    } else if (str.search(/\d/) == -1) {
-       return 0;
     } else if (str.search(/[a-zA-Z]/) == -1) {
+       return 0;
+    } else if (str.search(/\d/) == -1 && str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) == -1) {
         return 0;
     }
-    return 1;
+     return 1;
 }
+
+function checkEmail(email)
+{
+    //regular expression for email
+    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+    if(pattern.test(email)){
+        return true;
+        console.log("true");
+    } else {
+        return false;
+        console.log("false");
+    }
+}
+
 
 }
 

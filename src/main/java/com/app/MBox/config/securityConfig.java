@@ -32,8 +32,8 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests().antMatchers("jquery/**/","bootstrap/**/","css/**","images/**","js/**").permitAll()
                 .antMatchers("home/jquery/**/","home/bootstrap/**/","home/css/**","home/images/**","home/js/**").permitAll()
-                .antMatchers("/registration","/home/homepage").permitAll().antMatchers("/successRegister").permitAll()
-                .antMatchers("/successfullConfirm","/unSuccessfullConfirm").permitAll()
+                .antMatchers("/registration","/home/homepage").permitAll().antMatchers("/successRegister","/forgotPassword","/confirm").permitAll()
+                .antMatchers("/successfullConfirm","/unSuccessfullConfirm","/resetPassword").permitAll()
                 .antMatchers("/admin").hasAnyRole("ADMIN").anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").loginProcessingUrl("/app-login").usernameParameter("app_username").passwordParameter("app_password").defaultSuccessUrl("/home/homepage").permitAll()
                 .and().logout().logoutUrl("/app-logout").logoutSuccessUrl("/login")
