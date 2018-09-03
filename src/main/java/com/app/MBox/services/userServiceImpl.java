@@ -1,6 +1,7 @@
 package com.app.MBox.services;
 
 
+import com.app.MBox.aditional.emailTemplateEnum;
 import com.app.MBox.dto.userDto;
 import com.app.MBox.core.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,6 @@ public class userServiceImpl implements userService {
 
             }
 
-            //generate token and add user roles
             users user=new users();
             user=createUser(accountDto);
             role role= roleServiceImpl.findByName(rolesEnum.LISTENER.toString());
@@ -70,13 +70,13 @@ public class userServiceImpl implements userService {
             verificationToken.setUser(user);
             verificationToken.setToken(UUID.randomUUID().toString());
             verificationTokenServiceImpl.saveVerificationToken(verificationToken);
-            String appUrl=request.getScheme() + "://" + request.getServerName() +":8080"+ "/confirm?token=" + verificationToken.getToken();
+            String appUrl=request.getScheme() + "://" + request.getServerName() +":8080"+ "/confirm?token=" + verificationToken.getToken(); //part :8080 wont be needed in stage
 
-            emailTemplate emailTemplate=emailTemplateService.findByName("verificationMail");
+            emailTemplate emailTemplate=emailTemplateService.findByName(emailTemplateEnum.verificationMail.toString());
             String newBody=emailTemplate.getBody().replace("[NAME]",user.getName());
             String body=newBody.replaceAll("href=\"\"","href=\"" + appUrl + "\"");
            emailService emailService=new emailService();
-            emailService.sendMail("email-smtp.us-east-1.amazonaws.com","587","AKIAJHEYUTQZO5EDB3WA","Akp4SGKhVhC/SAjV+bao5XocI7A+yl7s6/Q7e/Wa3ffR","no-reply@it-labs.com",user.getName(),"altcoding5@gmail.com",emailTemplate.getSubject(),body);
+            emailService.sendMail(user.getName(),user.getEmail(),emailTemplate.getSubject(),body);
 
 
         return user;
@@ -100,11 +100,11 @@ public class userServiceImpl implements userService {
         verificationToken.setToken(UUID.randomUUID().toString());
         verificationTokenServiceImpl.saveVerificationToken(verificationToken);
         String appUrl=request.getScheme() + "://" + request.getServerName()+":8080" + "/resetPassword?token=" + verificationToken.getToken();
-        emailTemplate emailTemplate=emailTemplateService.findByName("ForgotPassword");
+        emailTemplate emailTemplate=emailTemplateService.findByName(emailTemplateEnum.ForgotPassword.toString());
         String newBody=emailTemplate.getBody().replace("[NAME]",user.getName());
         String body=newBody.replace("[APPURL]",appUrl);
         emailService emailService=new emailService();
-        emailService.sendMail("email-smtp.us-east-1.amazonaws.com","587","AKIAJHEYUTQZO5EDB3WA","Akp4SGKhVhC/SAjV+bao5XocI7A+yl7s6/Q7e/Wa3ffR","no-reply@it-labs.com",user.getName(),"altcoding5@gmail.com",emailTemplate.getSubject(),body);
+        emailService.sendMail(user.getName(),user.getName(),emailTemplate.getSubject(),body);
 
     }
 

@@ -59,14 +59,12 @@ public class verificationTokenServiceImpl implements verificationTokenService {
             user.setActivated(true);
             userRepository.save(user);
             verificationTokenRepository.delete(verificationToken);
-            System.out.println("GOOD TOKEN SAVE USER DELETE TOKEN");
              return true;
         }   else {
             userRoles userRoles=userRolesServiceImpl.findByUserId(user.getId());
            userRolesServiceImpl.deleteUserRoles(userRoles);
             verificationTokenRepository.delete(verificationToken);
            userRepository.delete(user);
-            System.out.println("BAD TOKEN DELETE USER DELETE TOKEN");
                 return false;
         }
 

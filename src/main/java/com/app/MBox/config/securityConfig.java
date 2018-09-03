@@ -1,5 +1,6 @@
 package com.app.MBox.config;
 
+import com.app.MBox.aditional.rolesEnum;
 import com.app.MBox.services.userDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -31,10 +32,10 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests().antMatchers("jquery/**/","bootstrap/**/","css/**","images/**","js/**").permitAll()
-                .antMatchers("home/jquery/**/","home/bootstrap/**/","home/css/**","home/images/**","home/js/**").permitAll()
                 .antMatchers("/registration","/home/homepage").permitAll().antMatchers("/successRegister","/forgotPassword","/confirm").permitAll()
                 .antMatchers("/successfullConfirm","/unSuccessfullConfirm","/resetPassword").permitAll()
-                .antMatchers("/admin").hasAnyRole("ADMIN").anyRequest().authenticated()
+                .antMatchers("/admin").hasAnyRole(rolesEnum.ADMIN.toString()).anyRequest().authenticated()
+                .antMatchers("/changePassword").hasAnyRole(rolesEnum.ADMIN.toString(),rolesEnum.LISTENER.toString(),rolesEnum.ARTIST.toString(),rolesEnum.RECORDLABEL.toString()).anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").loginProcessingUrl("/app-login").usernameParameter("app_username").passwordParameter("app_password").defaultSuccessUrl("/home/homepage").permitAll()
                 .and().logout().logoutUrl("/app-logout").logoutSuccessUrl("/login")
                 .and().exceptionHandling().accessDeniedPage("/error");

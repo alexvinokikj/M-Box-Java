@@ -53,9 +53,9 @@ public class loginController {
 
     @RequestMapping(value = "/forgotPassword",method = RequestMethod.POST)
     public ModelAndView forgotPasswordPost(ModelAndView modelAndView, @RequestParam("email") String userEmail, HttpServletRequest request) {
-        users user=userServiceImpl.findByEmail(userEmail);   //what if he is not activated!!!!!!!!!!!
+        users user=userServiceImpl.findByEmail(userEmail);
 
-        if(user!=null) {
+        if(user!=null && user.isActivated()) {
                 userServiceImpl.forgotPassword(user,request);
                 modelAndView.setViewName("passwordResetMail");
                 return modelAndView;

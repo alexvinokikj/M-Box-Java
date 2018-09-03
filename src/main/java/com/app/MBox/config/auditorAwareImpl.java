@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class auditorAwareImpl implements AuditorAware<Integer> {
 
-
+    //It is not correct first get the name of logged in user than find his id in the database
     @Override
     public Optional<Integer> getCurrentAuditor() {
        Object object= SecurityContextHolder.getContext().getAuthentication().getPrincipal();

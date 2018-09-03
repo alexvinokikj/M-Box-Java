@@ -23,8 +23,13 @@ import java.util.logging.Logger;
 @Setter
 @NoArgsConstructor
 public class emailService {
+    private static String smtpServerHost="email-smtp.us-east-1.amazonaws.com";
+    private static String smtpServerPort="587";
+    private static String smtpUserName="AKIAJHEYUTQZO5EDB3WA";
+    private static String smtpUserPassword="Akp4SGKhVhC/SAjV+bao5XocI7A+yl7s6/Q7e/Wa3ffR";
+    private static String fromUserEmail="no-reply@it-labs.com";
 
-    void sendMail(String smtpServerHost, String smtpServerPort,  String smtpUserName, String smtpUserPassword, String fromUserEmail, String fromUserFullName, String toEmail, String subject, String body) {
+    void sendMail(String fromUserFullName, String toEmail, String subject, String body) {
         try {
             Properties props = System.getProperties();
             props.put("mail.transport.protocol", "smtp");
