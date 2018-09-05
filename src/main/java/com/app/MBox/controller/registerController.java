@@ -19,8 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @Controller
@@ -42,12 +42,12 @@ public class registerController {
 
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ModelAndView registerUserAccount(@ModelAttribute("user") @Valid userDto accountDto, BindingResult result, HttpServletRequest request, Errors errors) {
+    public ModelAndView registerUserAccount(@ModelAttribute("user") @Valid userDto accountDto, BindingResult result, HttpServletRequest request) {
         users registered = new users();
 
         if (!result.hasErrors()) {
+                    registered = userServiceImpl.registerNewUserAccount(accountDto, request);
 
-            registered = createUserAccount(accountDto, result , request);
         }
         if (registered == null) {
             result.rejectValue("email", "message.regError");
@@ -63,15 +63,7 @@ public class registerController {
         }
 
     }
-    private users createUserAccount(userDto accountDto, BindingResult result, HttpServletRequest request) {
-        users registered = null;
-        try {
-            registered = userServiceImpl.registerNewUserAccount(accountDto,request);
-        } catch (Exception e) {
-            return null;
-        }
-        return registered;
-    }
+
 
     @RequestMapping(value = "/successRegister")
     public String success () {

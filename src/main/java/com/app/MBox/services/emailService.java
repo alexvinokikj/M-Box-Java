@@ -1,5 +1,6 @@
 package com.app.MBox.services;
 
+import com.app.MBox.aditional.properties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,35 +24,30 @@ import java.util.logging.Logger;
 @Setter
 @NoArgsConstructor
 public class emailService {
-    private static String smtpServerHost="email-smtp.us-east-1.amazonaws.com";
-    private static String smtpServerPort="587";
-    private static String smtpUserName="AKIAJHEYUTQZO5EDB3WA";
-    private static String smtpUserPassword="Akp4SGKhVhC/SAjV+bao5XocI7A+yl7s6/Q7e/Wa3ffR";
-    private static String fromUserEmail="no-reply@it-labs.com";
+    @Autowired
+    private properties properties;
 
     void sendMail(String fromUserFullName, String toEmail, String subject, String body) {
         try {
             Properties props = System.getProperties();
             props.put("mail.transport.protocol", "smtp");
-            props.put("mail.smtp.port", smtpServerPort);
+            props.put("mail.smtp.port", properties.getSmtpServerPort());
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.auth", "true");
 
             Session session = Session.getDefaultInstance(props);
 
             MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(fromUserEmail, fromUserFullName));
+            msg.setFrom(new InternetAddress(properties.getFromUserEmail(), fromUserFullName));
             msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
             msg.setSubject(subject);
             msg.setContent(body, "text/html");
 
             Transport transport = session.getTransport();
-            transport.connect(smtpServerHost, smtpUserName, smtpUserPassword);
+            transport.connect(properties.getSmtpServerHost(), properties.getSmtpUserName(), properties.getSmtpUserPassword());
             transport.sendMessage(msg, msg.getAllRecipients());
         } catch (Exception ex) {
-            System.out.println("There was a problem sending the mail");
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, ex.getMessage(), ex);
-
         }
     }
 }

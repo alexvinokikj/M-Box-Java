@@ -10,9 +10,13 @@ import com.app.MBox.core.repository.verificationTokenRepository;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 @Service("verificationTokenServiceImpl")
 public class verificationTokenServiceImpl implements verificationTokenService {
+
+    private static int EXPIRETIME=24*3600*1000;
+
     @Autowired
     private verificationTokenRepository verificationTokenRepository ;
 
@@ -53,7 +57,7 @@ public class verificationTokenServiceImpl implements verificationTokenService {
         users user=verificationToken.getUser();
         Date today=new Date();
         Date dateCreated=verificationToken.getDateCreated();
-        Date newDate=new Date(dateCreated.getTime()+24*3600*1000);// 24 hours * 3600 seconds * 1000 milisecond in every second
+        Date newDate=new Date(dateCreated.getTime()+EXPIRETIME);
 
         if(today.compareTo(newDate)<=0) {
             user.setActivated(true);
@@ -70,19 +74,41 @@ public class verificationTokenServiceImpl implements verificationTokenService {
 
     }
 
-    public boolean confirmPasswordResetUser(String token) {
+    public boolean checkTokenExpired(String token) {
         verificationToken verificationToken=verificationTokenRepository.findByToken(token);
-        Date today=new Date();
-        Date dateCreated=verificationToken.getDateCreated();
-        Date newDate=new Date(dateCreated.getTime()+24*3600*1000);// 24 hours * 3600 seconds * 1000 milisecond in every second
+        if(verificationToken!=null) {
 
-        if(today.compareTo(newDate)<=0) {
-            return true;
-        }   else {
-            verificationTokenRepository.delete(verificationToken);
-            return false;
+            if(checkIfExpiredDate(verificationToken.getDateCreated())) {
+                verificationTokenRepository.delete(verificationToken);
+                return true;
+            }   else {
+                return false;
+            }
+
         }
 
+            return true;
+
+
+    }
+
+    public boolean checkIfExpiredDate(Date dateCreated) {
+        Date today = new Date();
+        Date expirationDate = new Date(dateCreated.getTime() + EXPIRETIME);
+
+        if (today.compareTo(expirationDate) <= 0) {
+            return false;
+        }
+            return true;
+
+    }
+
+    public verificationToken createToken(users user) {
+        verificationToken verificationToken=new verificationToken();
+        verificationToken.setUser(user);
+        verificationToken.setToken(UUID.randomUUID().toString());
+        saveVerificationToken(verificationToken);
+        return verificationToken;
     }
 
 

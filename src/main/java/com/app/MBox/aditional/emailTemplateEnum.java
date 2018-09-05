@@ -5,6 +5,6 @@ public enum emailTemplateEnum {
     verificationMail,
     deleteRecordLabelMail,
     deleteArtistMail,
-    RecordLabelSignUp,
-    ForgotPassword;
+    recordLabelSignUp,
+    forgotPassword;
 }

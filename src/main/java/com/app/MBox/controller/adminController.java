@@ -5,10 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping(value = "/admin")
 public class adminController {
 
-@RequestMapping(value = "/admin")
-public String admin() {
+@RequestMapping(value = "/dashboard")
+public String showAdminDashboard() {
 
     return "adminDashboard";
 }

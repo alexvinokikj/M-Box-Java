@@ -1,9 +1,13 @@
 package com.app.MBox.controller;
 
+import com.app.MBox.aditional.passwordChecker;
+import com.app.MBox.aditional.properties;
+import com.app.MBox.aditional.rolesEnum;
 import com.app.MBox.core.model.users;
 import com.app.MBox.services.userServiceImpl;
 import com.app.MBox.services.verificationTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,11 +30,18 @@ public class loginController {
     @Autowired
     verificationTokenServiceImpl verificationTokenServiceImpl;
 
+    @Autowired
+    properties properties;
+
+    @Autowired
+    passwordChecker passwordChecker;
+
     @GetMapping(value = "/login")
     public ModelAndView login() {
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;
+
     }
 
     @GetMapping("/error")
@@ -53,16 +64,14 @@ public class loginController {
 
     @RequestMapping(value = "/forgotPassword",method = RequestMethod.POST)
     public ModelAndView forgotPasswordPost(ModelAndView modelAndView, @RequestParam("email") String userEmail, HttpServletRequest request) {
-        users user=userServiceImpl.findByEmail(userEmail);
 
-        if(user!=null && user.isActivated()) {
-                userServiceImpl.forgotPassword(user,request);
+
+        if(userServiceImpl.forgotPassword(userEmail,request)) {
                 modelAndView.setViewName("passwordResetMail");
                 return modelAndView;
 
         }   else {
-            String errorMessage="Incorrect email";
-            modelAndView.addObject("errorMsg",errorMessage);
+            modelAndView.addObject("errorMsg","Incorrect email");
             modelAndView.setViewName("forgotPassword");
             return modelAndView;
         }
@@ -74,8 +83,8 @@ public class loginController {
     @RequestMapping(value = "/resetPassword",method = RequestMethod.GET)
     public ModelAndView showResetPassword(ModelAndView modelAndView, @RequestParam("token") String token) {
 
-        if (!verificationTokenServiceImpl.confirmPasswordResetUser(token)) {
-            modelAndView.setViewName("error");                       //create error page for all the errors meaning all the token expired
+        if (verificationTokenServiceImpl.checkTokenExpired(token)) {
+            modelAndView.setViewName("error");
             return modelAndView;
         }   else {
             modelAndView.addObject("confirmationToken",token);
@@ -87,13 +96,13 @@ public class loginController {
     }
 
     @RequestMapping(value = "/resetPassword",method = RequestMethod.POST)
-    public ModelAndView processResetPassword(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam("token") String token,@RequestParam("password") String password,@RequestParam("ConfirmPassword") String confirmPassword) {
+    public ModelAndView processResetPassword(ModelAndView modelAndView, @RequestParam("token") String token,@RequestParam("password") String password,@RequestParam("ConfirmPassword") String confirmPassword) {
 
-        if(invalidPassword(password)) {
-            modelAndView.addObject("errorMessage","Password must be between 8 and 64 characters and be alphanumeric");
+        if(passwordChecker.isInvalidPassword(password)) {
+            modelAndView.addObject("errorMessage",properties.getPasswordMessage());
             modelAndView.setViewName("redirect:resetPassword?token=" + token);
             return modelAndView;
-        }   else if (!passwordMatches(password,confirmPassword)) {
+        }   else if (!passwordChecker.doPasswordMatches(password,confirmPassword)) {
             modelAndView.addObject("errorConfirmMessage","Passwords does not match");
             modelAndView.setViewName("redirect:resetPassword?token=" + token);
             return modelAndView;
@@ -103,31 +112,6 @@ public class loginController {
             modelAndView.setViewName("confirmationPasswordReset");
             return modelAndView;
     }
-
-
-    public boolean invalidPassword(String password) {
-
-        if(password.length()<8 || password.length()>64) {
-            return true;
-        }   else if (!Pattern.compile("[a-zA-Z]").matcher(password).find()) {
-            return true;
-        }   else if(!Pattern.compile( "[0-9]" ).matcher( password ).find() && !Pattern.compile("[$&+,:;=?@#|'<>.-^*()%!]").matcher(password).find() ) {
-            return true;
-        }
-        return false;
-
-    }
-
-    public boolean passwordMatches(String password,String confirmPassword) {
-
-        if (password.equals(confirmPassword)) {
-            return true;
-        }   else {
-            return false;
-        }
-    }
-
-
 
 
 }

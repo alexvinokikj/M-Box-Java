@@ -1,6 +1,7 @@
 package com.app.MBox.services;
 
 
+import com.app.MBox.aditional.user;
 import com.app.MBox.core.model.role;
 import com.app.MBox.core.model.users;
 import com.app.MBox.core.model.userRoles;
@@ -28,16 +29,19 @@ public class userDetailsServiceImpl implements UserDetailsService {
     userRolesService userRolesService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public user loadUserByUsername(String email) throws UsernameNotFoundException {
         users activeUser=userService.findByEmail(email);
             if (activeUser!=null && activeUser.isActivated()) {
                 userRoles userRoles=userRolesService.findByUserId(activeUser.getId());
-                GrantedAuthority authority =new SimpleGrantedAuthority(userRoles.getRole().getName());
-                User user = new User (activeUser.getEmail(),activeUser.getPassword(), Arrays.asList(authority));
-                UserDetails userDetails=(UserDetails) user;
-                return user;
+
+                if(userRoles!=null) {
+                    GrantedAuthority authority = new SimpleGrantedAuthority(userRoles.getRole().getName());
+                    user user = new user(activeUser.getEmail(), activeUser.getPassword(), Arrays.asList(authority),activeUser.getId());
+                    //UserDetails userDetails = (UserDetails) user;
+                    return user;
+                }
             }
 
-            return null;                   //maybe it will show mistake because I return null
+            return null;
     }
 }
