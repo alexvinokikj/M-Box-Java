@@ -6,7 +6,9 @@ import com.app.MBox.aditional.properties;
 import com.app.MBox.core.model.users;
 import com.app.MBox.dto.changePasswordDto;
 import com.app.MBox.dto.userDto;
+import com.app.MBox.services.recordLabelServiceImpl;
 import com.app.MBox.services.userServiceImpl;
+import com.app.MBox.services.verificationTokenServiceImpl;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +35,10 @@ public class userController {
     properties properties;
     @Autowired
     passwordChecker passwordChecker;
+    @Autowired
+    recordLabelServiceImpl recordLabelServiceImpl;
+    @Autowired
+    verificationTokenServiceImpl verificationTokenServiceImpl;
 
     @RequestMapping(value = "/changePassword",method = RequestMethod.GET)
     public Model showChangePassword(Model model) {
@@ -66,5 +72,38 @@ public class userController {
         return modelAndView;
 
     }
+
+
+    @RequestMapping(value = "/joinIfInvited" , method = RequestMethod.GET)
+    public ModelAndView showJoinIfInvitedPage(ModelAndView modelAndView, @RequestParam("token") String token) {
+        if (verificationTokenServiceImpl.checkTokenExpired(token)) {
+            modelAndView.setViewName("error");
+            return modelAndView;
+        }   else {
+            modelAndView.addObject("confirmationToken",token);
+            modelAndView.setViewName("joinIfInvited");
+            return modelAndView;
+        }
+    }
+
+    @RequestMapping(value = "/joinIfInvited",method = RequestMethod.POST)
+    public ModelAndView processResetPassword(ModelAndView modelAndView, @RequestParam("token") String token,@RequestParam("password") String password,@RequestParam("ConfirmPassword") String confirmPassword) {
+
+        if(passwordChecker.isInvalidPassword(password)) {
+            modelAndView.addObject("errorMessage",properties.getPasswordMessage());
+            modelAndView.setViewName("redirect:joinIfInvited?token=" + token);
+            return modelAndView;
+        }   else if (!passwordChecker.doPasswordMatches(password,confirmPassword)) {
+            modelAndView.addObject("errorConfirmMessage","Passwords does not match");
+            modelAndView.setViewName("redirect:joinIfInvited?token=" + token);
+            return modelAndView;
+
+        }
+        recordLabelServiceImpl.setRecordLabelPassword(token,password);
+        modelAndView.setViewName("recordLabelAccount");
+        return modelAndView;
+    }
+
+
 
 }

@@ -3,10 +3,11 @@ package com.app.MBox.services;
 
 import com.app.MBox.aditional.emailTemplateEnum;
 import com.app.MBox.aditional.properties;
+import com.app.MBox.dto.recordLabelDto;
 import com.app.MBox.dto.userDto;
 import com.app.MBox.core.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.app.MBox.core.repository.userRepository;
@@ -15,7 +16,6 @@ import com.app.MBox.aditional.rolesEnum;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 @Service("userServiceImpl")
 public class userServiceImpl implements userService {
@@ -38,6 +38,10 @@ public class userServiceImpl implements userService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private properties properties;
+    @Autowired
+    private recordLabelArtistsServiceServiceImpl recordLabelArtistsServiceImpl;
+    @Autowired
+    private recordLabelServiceImpl recordLabelServiceImpl;
 
     public users findByEmail(String email) {
 
@@ -67,10 +71,10 @@ public class userServiceImpl implements userService {
             userRoles.setRole(role);
             userRolesServiceImpl.saveUserRoles(userRoles);
             verificationToken verificationToken=verificationTokenServiceImpl.createToken(user);
-            String appUrl=String.format("%s://%s:8080/confirm?token=%s",request.getScheme(),request.getServerName(),verificationToken.getToken()); //part :8080 wont be needed in stage
+            String appUrl=String.format("%s://%s%sconfirm?token=%s",request.getScheme(),request.getServerName(),properties.getPORT(),verificationToken.getToken()); //part :8080 wont be needed in stage
             List <String> list=parsingEmailBody(user,appUrl,emailTemplateEnum.verificationMail.toString());
             emailService emailService=new emailService();
-            emailService.sendMail(user.getName(),user.getEmail(),list.get(1),list.get(0));
+            emailService.sendMail(user.getName(),properties.getToEmailAdress(),list.get(1),list.get(0));
 
         return user;
     }
@@ -100,10 +104,10 @@ public class userServiceImpl implements userService {
         users user=findByEmail(email);
         if(user!=null && user.isActivated()) {
             verificationToken verificationToken=verificationTokenServiceImpl.createToken(user);
-            String appUrl=String.format("%s://%s:8080/resetPassword?token=%s",request.getScheme(),request.getServerName(),verificationToken.getToken());
+            String appUrl=String.format("%s://%s%sresetPassword?token=%s",request.getScheme(),request.getServerName(),properties.getPORT(),verificationToken.getToken());
             List <String> list=parsingEmailBody(user,appUrl,emailTemplateEnum.forgotPassword.toString());
             emailService emailService=new emailService();
-            emailService.sendMail(user.getName(),user.getEmail(),list.get(1),list.get(0));
+            emailService.sendMail(user.getName(),properties.getToEmailAdress(),list.get(1),list.get(0));
              return true;
 
         }
@@ -115,11 +119,28 @@ public class userServiceImpl implements userService {
     public List<String> parsingEmailBody(users user, String appUrl, String templateName) {
         emailTemplate emailTemplate=emailTemplateService.findByName(templateName);
         String newBody=emailTemplate.getBody().replace(properties.getNAME(),user.getName());
-        String body=newBody.replace(properties.getAPPURL(),appUrl);
+        String newBody1=newBody.replace(properties.getEMAILADRESS(),user.getEmail());
+        String body=newBody1.replace(properties.getAPPURL(),appUrl);
         List <String> list=new LinkedList<>();
         list.add(body);
         list.add(emailTemplate.getSubject());
         return list;
+    }
+
+    public List<recordLabelDto> findRecordLabels(int page,int size) {
+        List<recordLabelDto> recordLabelDtos=new LinkedList<>();
+        //List<users> users=userRepository.findAllRecordLabels();
+        List<users> users=userRepository.findRecordLabels(PageRequest.of(page,size));
+        for(int i=0 ; i<users.size() ; i++) {
+            recordLabelDto recordLabelDto=new recordLabelDto();
+            recordLabelDto.setEmail(users.get(i).getEmail());
+            recordLabelDto.setName(users.get(i).getName());
+            recordLabel recordLabel=recordLabelServiceImpl.findByUserId(users.get(i).getId());
+            int number= recordLabelArtistsServiceImpl.findNumberOfArtistsInRecordLabel(recordLabel.getId());
+            recordLabelDto.setNumber(number);
+            recordLabelDtos.add(recordLabelDto);
+        }
+        return recordLabelDtos;
     }
 }
 

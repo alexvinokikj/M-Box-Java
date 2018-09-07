@@ -1,22 +1,22 @@
 create table artist (id  serial not null, bio varchar(500), is_deleted boolean not null, user_id int4, primary key (id));
 
-create table configuration (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, key varchar(100), value varchar(255), primary key (id));
+create table configuration (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 , key varchar(100), value varchar(255), primary key (id));
 
-create table email_template (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, body varchar(500), name varchar(50) not null, subject varchar(50), primary key (id));
+create table email_template (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 , body varchar(500), name varchar(50) not null, subject varchar(50), primary key (id));
 
 create table record_label (id  serial not null, about_info varchar(500), user_id int4, primary key (id));
 
 create table record_label_artists (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, artist_id int4, record_label_id int4, primary key (id));
 
-create table role (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, name varchar(20) not null, primary key (id));
+create table role (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 , name varchar(20) not null, primary key (id));
 
-create table song (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, album_name varchar(50), date_of_release timestamp, genre varchar(255), image varchar(50), lyrics varchar(255), name varchar(50), vimeo_link varchar(100), youtube_link varchar(100), artist_id int4, primary key (id));
+create table song (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 , album_name varchar(50), date_of_release timestamp, genre varchar(255), image varchar(50), lyrics varchar(255), name varchar(50), vimeo_link varchar(100), youtube_link varchar(100), artist_id int4, primary key (id));
 
-create table user_roles (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, role_id int4, user_id int4, primary key (id));
+create table user_roles (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 , role_id int4, user_id int4, primary key (id));
 
-create table users (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, email varchar(320) not null, is_activated boolean not null, name varchar(50) not null, password varchar(255) not null, picture varchar(50), primary key (id));
+create table users (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4, email varchar(320) not null, is_activated boolean not null, name varchar(50) not null, password varchar(255), picture varchar(50), primary key (id));
 
-create table verification_token (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4 not null, token varchar(255), user_id int4, primary key (id));
+create table verification_token (id  serial not null, created_by int4 not null, date_created timestamp not null, date_modified timestamp, modified_by int4, token varchar(255), user_id int4, primary key (id));
 
 alter table configuration add constraint UC_configuration_key unique (key);
 

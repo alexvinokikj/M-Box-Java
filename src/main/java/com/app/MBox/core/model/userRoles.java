@@ -25,7 +25,7 @@ public class userRoles extends audit {
     @JoinColumn(name="userId" , foreignKey = @ForeignKey(name = "FK_user_userRoles") )
     private users user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="roleId" , foreignKey = @ForeignKey(name = "FK_role_userRoles"))
     private role role;
 

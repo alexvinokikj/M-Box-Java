@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:overflow="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>MBox</title>
@@ -12,46 +12,120 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+
+
+    </style>
 </head>
 <body>
 
-<a class="navbar-brand">
-    <img th:src="@{/images/mBoxLogo.jpg}" width="40" height="40"/>
-</a>
+<div th:insert="shared/dashboardHeader :: dashboardHeader"></div>
 
-<div class="navbar-center">
-
-    <div class="collapse navbar-collapse" id="codebrainery-toggle-nav" style="margin-right:7% ; margin-top:40px">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" style="margin: 0; padding: 0">
-                    <i class="fa fa-user-circle" style="font-size:35px; margin-top: 8px; margin-left: 8px"></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a th:href="@{/admin}">Dashboard</a></li>
-                    <li><a href="javascript:{}" onclick="document.getElementById('form').submit();">Sign out</a></li>
-                    <form id="form" th:action="@{/app-logout}" method="POST">
-                    </form>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div>
 <br>
 <br>
 <br>
-<div class="col-sm-4 col-md-4">
-        <button type="button" class="btn">Add New Record Label</button>
-        <br>
-        <br>
+<br>
+<br>
 
-        <form class="form" role="search">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search">
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-4 col-md-4">
+            <button type="button" class="btn btn-primary" style="margin-left:auto; margin-right:auto; width:100%" onclick="redirect()">Add New Record Label</button>
         </div>
+        <div class="col-sm-8 col-md-8">
+        <form class="form" role="search">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search">
         </form>
-
+        </div>
 </div>
+
+    <div class="row" id="content-box" style="margin-top: 25px">
+
+     <div id="tableContainer" class="table-responsive">
+        <table st-table="rowCollection" class="table table-striped" style="border: 1px solid gray;">
+            <thead class="fixedHeader">
+            <tr style="display: block">
+                <th style="width: 19%;">Record Label Name</th>
+                <th style="width: 19%;">Record Label Email address</th>
+                <th style="width: 19%;">Number of artists</th>
+                <th style="width: 19%;">Delete Record Label</th>
+            </tr>
+            </thead>
+            <tbody id="bodyScroll" style="height: 620px; overflow-y: auto; display: block">
+
+            <tr th:each="recordLabel : ${recordLabels}">
+                <form role="form" th:action="@{delete}" method="post" id="form">
+                <td th:text="${recordLabel.name}" style="width: 15%;"></td>
+                <td th:text="${recordLabel.email}" style="width: 15%;"></td>
+                <td th:text="${recordLabel.number}" style="width: 15%;"></td>
+                <input type="hidden" name="email" th:value=${recordLabel.email}>
+                <td style="width: 15%;"><button onclick="submitForm()">DELETE</button></td>
+                </form>
+            </tr>
+
+            </tbody>
+
+        </table>
+         <input type="hidden" id="row_no" name="pageNumber" value="0">
+    </div>
+        </div>
+</div>
+
+
+<script th:inline="javascript">
+               /*<![CDATA[*/
+                var serverContext = [[@{/}]];
+                function redirect() {
+
+                window.location.href = serverContext + "admin/addNewRecordLabel";
+                }
+
+                function submitForm() {
+                    if(confirm("Are you sure you want to delete this record label")) {
+                            document.getElementById('form').submit();
+                    }
+
+                }
+                /*]]>*/
+
+
+        </script>
+
+
+<script type="text/javascript">
+        $("#bodyScroll").scroll(function ()
+
+	  if($("#bodyScroll").height() <= $("#bodyScroll").scrollTop() + $("#bodyScroll").height())
+	  {
+		loadmore();
+	  }
+    );
+
+    function loadmore()
+    {
+      var val = document.getElementById("row_no").value;
+      var data = {"val":document.getElementById("row_no").value}
+      $.ajax({
+      type: 'post',
+      url: 'admin/dashboard',
+      dataType : "json",
+      contentType: "application/json;
+      data: JSON.stringify(data),
+      success: function (response) {
+      console.log("I got a response")
+	  var content = document.getElementById("all_rows");
+      content.innerHTML = content.innerHTML+response;
+
+      // We increase the value by 10 because we limit the results by 10
+      document.getElementById("row_no").value = Number(val)+1;
+      },
+      });
+    }
+
+</script>
+
+
 
 
 </body>

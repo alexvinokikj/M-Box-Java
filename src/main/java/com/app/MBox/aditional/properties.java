@@ -22,4 +22,7 @@ public class properties {
     private  String fromUserEmail;
     private  String APPURL;
     private  String NAME;
+    private  String EMAILADRESS;
+    private  String PORT;
+    private  String toEmailAdress;
 }

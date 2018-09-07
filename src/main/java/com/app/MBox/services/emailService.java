@@ -26,25 +26,27 @@ import java.util.logging.Logger;
 public class emailService {
     @Autowired
     private properties properties;
+    @Autowired
+    private configurationServiceImpl configurationServiceImpl;
 
     void sendMail(String fromUserFullName, String toEmail, String subject, String body) {
         try {
             Properties props = System.getProperties();
             props.put("mail.transport.protocol", "smtp");
-            props.put("mail.smtp.port", properties.getSmtpServerPort());
+            props.put("mail.smtp.port", configurationServiceImpl.findByKey(properties.getSmtpServerPort()).getValue());
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.auth", "true");
 
             Session session = Session.getDefaultInstance(props);
 
             MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(properties.getFromUserEmail(), fromUserFullName));
+            msg.setFrom(new InternetAddress(configurationServiceImpl.findByKey(properties.getFromUserEmail()).getValue(), fromUserFullName));
             msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
             msg.setSubject(subject);
             msg.setContent(body, "text/html");
 
             Transport transport = session.getTransport();
-            transport.connect(properties.getSmtpServerHost(), properties.getSmtpUserName(), properties.getSmtpUserPassword());
+            transport.connect(configurationServiceImpl.findByKey(properties.getSmtpServerHost()).getValue(),configurationServiceImpl.findByKey(properties.getSmtpUserName()).getValue(),configurationServiceImpl.findByKey(properties.getSmtpUserPassword()).getValue());
             transport.sendMessage(msg, msg.getAllRecipients());
         } catch (Exception ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, ex.getMessage(), ex);
