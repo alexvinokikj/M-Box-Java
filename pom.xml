@@ -10,41 +10,6 @@
 
 	<name>MBox</name>
 	<description>Demo project for Spring Boot</description>
-<!-- Profile configuration -->
-<profiles>
-    <!-- The configuration of the development profile -->
-    <profile>
-        <id>dev</id>
-        <!-- The development profile is active by default -->
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <properties>
-            <!--
-                Specifies the build.profile.id property that must be equal than the name of
-                the directory that contains the profile specific configuration file.
-                Because the name of the directory that contains the configuration file of the
-                development profile is dev, we must set the value of the build.profile.id 
-                property to dev.
-            -->
-            <build.profile.id>dev</build.profile.id>
-        </properties>
-    </profile>
-    <!-- The configuration of the production profile -->
-    <profile>
-        <id>prod</id>
-        <properties>
-            <!--
-                Specifies the build.profile.id property that must be equal than the name of
-                the directory that contains the profile specific configuration file.
-                Because the name of the directory that contains the configuration file of the
-                production profile is prod, we must set the value of the build.profile.id 
-                property to prod.
-            -->
-            <build.profile.id>stage</build.profile.id>
-        </properties>
-    </profile>
-</profiles>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -177,6 +142,40 @@
 
 	</dependencies>
       <build>
+	      
+<!-- Profiles configuration -->
+    <profiles>
+        <!-- The configuration of the development profile -->
+        <profile>
+            <id>dev</id>
+            <!-- The development profile is active by default -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--
+                    Specifies the build.profile.id property that must be equal than the name of
+                    the directory that contains the profile specific configuration file.
+                    Because the name of the directory that contains the configuration file of the
+                    development profile is dev, we must set the value of the build.profile.id property to dev.
+                -->
+                <build.profile.id>dev</build.profile.id>
+            </properties>
+        </profile>
+        <!-- The configuration of the production profile -->
+        <profile>
+            <id>stage</id>
+            <properties>
+                <!--
+                    Specifies the build.profile.id property that must be equal than the name of
+                    the directory that contains the profile specific configuration file.
+                    Because the name of the directory that contains the configuration file of the
+                    production profile is stage, we must set the value of the build.profile.id property to stage.
+                -->
+                <build.profile.id>stage</build.profile.id>
+            </properties>
+        </profile>
+    </profiles>
 <resources>
     <!--
         Placeholders that are found from the files located in the configured resource
