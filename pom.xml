@@ -202,13 +202,13 @@
         <directory>src/main/resources</directory>
     </resource>
 </resources>	      
-<filters>
-    <!--
-        Ensures that the config.properties file is always loaded from the
-        configuration directory of the active Maven profile.
-    -->
-    <filter>profiles/${build.profile.id}/config.properties</filter>
-</filters>
+        <filters>
+            <!--
+                Ensures that the config.properties file is always loaded from the
+		        configuration directory of the active Maven profile. 
+            -->
+            <filter>profiles/${build.profile.id}/config.properties</filter>
+        </filters>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
