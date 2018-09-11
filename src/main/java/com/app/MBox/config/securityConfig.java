@@ -24,14 +24,22 @@ public class securityConfig extends WebSecurityConfigurerAdapter {
     userDetailsServiceImpl userDetailsServiceImpl;
 
 
+    public void configure (WebSecurity web) throws Exception {
+
+        web.ignoring().antMatchers("/jquery/**/","/bootstrap/**/","/css/**","/images/**","/js/**");
+
+
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests().antMatchers("jquery/**/","bootstrap/**/","css/**","images/**","js/**").permitAll()
-                .antMatchers("/home/** ").permitAll().antMatchers("/successRegister","/forgotPassword","/confirm").permitAll()
-                .antMatchers("/successfullConfirm","/unSuccessfullConfirm","/resetPassword").permitAll()
-                .antMatchers("/registration","/joinIfInvited").anonymous()
+                .antMatchers("/home/**").permitAll().antMatchers("/successRegister","/forgotPassword","/confirm").permitAll()
+                .antMatchers("/successfullConfirm","/unSuccessfullConfirm","/resetPassword","/joinIfInvited").permitAll()
+                .antMatchers("/registration").anonymous()
                 .antMatchers("/admin/**").hasAnyAuthority(rolesEnum.ADMIN.toString()).anyRequest().authenticated()
+                .antMatchers("/recordLabelAccount").hasAnyAuthority(rolesEnum.RECORDLABEL.toString()).anyRequest().authenticated()
                 .antMatchers("/changePassword").hasAnyAuthority(rolesEnum.LISTENER.toString(),rolesEnum.ARTIST.toString(),rolesEnum.RECORDLABEL.toString()).anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").loginProcessingUrl("/app-login").usernameParameter("app_username").passwordParameter("app_password").permitAll().successHandler(myAuthenticationSuccessHandler())
                 .and().logout().logoutUrl("/app-logout").logoutSuccessUrl("/login")

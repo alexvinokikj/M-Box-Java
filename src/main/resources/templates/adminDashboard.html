@@ -53,25 +53,43 @@
             </tr>
             </thead>
             <tbody id="bodyScroll" style="height: 620px; overflow-y: auto; display: block">
-
             <tr th:each="recordLabel : ${recordLabels}">
                 <form role="form" th:action="@{delete}" method="post" id="form">
                 <td th:text="${recordLabel.name}" style="width: 15%;"></td>
                 <td th:text="${recordLabel.email}" style="width: 15%;"></td>
                 <td th:text="${recordLabel.number}" style="width: 15%;"></td>
                 <input type="hidden" name="email" th:value=${recordLabel.email}>
-                <td style="width: 15%;"><button onclick="submitForm()">DELETE</button></td>
+                    <input type="hidden" name="name" th:value=${recordLabel.name}>
+                    <td style="width: 15%;"><button type="submit">DELETE</button></td>
                 </form>
             </tr>
 
             </tbody>
 
         </table>
-         <input type="hidden" id="row_no" name="pageNumber" value="0">
+         <input type="hidden" id="row_no" name="pageNumber" value="1">
     </div>
         </div>
 </div>
 
+<script>
+ function myFunction(name,email) {
+    if(confirm("Are you sure you want do delete " + name)) {
+
+          $.get("/admin/delete", {
+			email:email
+		}, function(data) {
+            redirectToDashboard();
+		}).done(function() {
+		}).fail(function(xhr, textStatus, errorThrown) {
+		}).complete(function() {
+            redirectToDashboard();
+		});
+
+    }
+            }
+
+</script>
 
 <script th:inline="javascript">
                /*<![CDATA[*/
@@ -81,49 +99,85 @@
                 window.location.href = serverContext + "admin/addNewRecordLabel";
                 }
 
-                function submitForm() {
-                    if(confirm("Are you sure you want to delete this record label")) {
-                            document.getElementById('form').submit();
+                 function redirectToDashboard() {
+                console.log("AM I HERE");
+                window.location.href = serverContext + "admin/dashboard";
+                }
+
+
+                $(document).ready(function () {
+
+
+
+	        $('form').submit(function(event) {
+	         var values = $(this).serialize();
+	         rez=values.split("=")
+                    if(!confirm("Are you sure you want to delete " + rez[rez.length-1] )) {
+                            event.preventDefault();
+                             return;
                     }
 
-                }
+	        })
+
+
+
+	        })
                 /*]]>*/
+   </script>
 
 
-        </script>
+
+<script>
+  jQuery(document).ready(
+
+	function($) {
+        var pixelsScrolled=240;
+		$("#bodyScroll").scroll(function () {
+
+            var scrolltop=$('#bodyScroll').scrollTop();
+            console.log(scrolltop);
+		    if(scrolltop==pixelsScrolled) {
+		    pixelsScrolled+=430;
+            var page=document.getElementById("row_no").value;
+            console.log(page + " THIS IS THE ID");
+			$.get("/admin/lazyLoad", {
+			page:page
+		}, function(data) {
+			console.log(data);
+			var html="";
+            for(i=0 ; i<data.length ; i++) {
+                html=html+'<tr><form role="form" action="delete" method="post" id="form1">';
+                html=html+'<td style="width: 15%;">' + data[i].name + '</td>';
+                html=html+'<td style="width: 15%;">' + data[i].email + '</td>';
+                html=html+'<td style="width: 15%;">' + data[i].number + '</td>';
+                html=html+'<input type="hidden" name="email" value=' + data[i].email + '>';
+                html=html+'<input type="hidden" name="name" value=' + data[i].name +'>';
+                html=html+'<td style="width: 15%;"><input type="submit" value="DELETE" id="' + data[i].name + '" name="' + data[i].email + '" onclick="myFunction(this.id,this.name)"></td>';
+                html=html+'</form></tr>';
+                }
+                $("#bodyScroll").append(html);
+                document.getElementById("row_no").value=Number(page)+1;
+		}).done(function() {
+		}).fail(function(xhr, textStatus, errorThrown) {
+		}).complete(function() {
 
 
-<script type="text/javascript">
-        $("#bodyScroll").scroll(function ()
+		});
 
-	  if($("#bodyScroll").height() <= $("#bodyScroll").scrollTop() + $("#bodyScroll").height())
-	  {
-		loadmore();
-	  }
-    );
 
-    function loadmore()
-    {
-      var val = document.getElementById("row_no").value;
-      var data = {"val":document.getElementById("row_no").value}
-      $.ajax({
-      type: 'post',
-      url: 'admin/dashboard',
-      dataType : "json",
-      contentType: "application/json;
-      data: JSON.stringify(data),
-      success: function (response) {
-      console.log("I got a response")
-	  var content = document.getElementById("all_rows");
-      content.innerHTML = content.innerHTML+response;
+                    }
 
-      // We increase the value by 10 because we limit the results by 10
-      document.getElementById("row_no").value = Number(val)+1;
-      },
-      });
-    }
 
+		});
+
+
+
+
+	});
 </script>
+
+
+
 
 
 

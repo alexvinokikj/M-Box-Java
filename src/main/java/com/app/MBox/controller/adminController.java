@@ -10,10 +10,7 @@ import com.app.MBox.services.verificationTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,12 +44,11 @@ public class adminController  {
     return modelAndView;
 }
 
-    @RequestMapping(value = "/dashboard",method = RequestMethod.POST)
-    public List<recordLabelDto> processLazyLoading(@RequestParam("val") int pageNumber) {
-        System.out.println("I AM IN THE CONTROLLER");
-        System.out.println(pageNumber + " THIS IS THE PAGE NUMBER");
+    @RequestMapping(value = "/lazyLoad",method = RequestMethod.GET)
+    @ResponseBody
+    public List<recordLabelDto> processLazyLoading(@RequestParam int page) {
         List<recordLabelDto> recordLabels=new LinkedList<>();
-        recordLabels=userServiceImpl.findRecordLabels(pageNumber,20);
+        recordLabels=userServiceImpl.findRecordLabels(page,20);
         return recordLabels;
     }
 
@@ -90,6 +86,11 @@ public class adminController  {
         return modelAndView;
         }
 
+    @RequestMapping(value = "/delete",method = RequestMethod.GET)
+    public String processDeleteRecordLabelGet(@RequestParam("email") String email) {
+        recordLabelServiceImpl.deleteRecordLabel(email);
+        return "OK";
+    }
 
 
 

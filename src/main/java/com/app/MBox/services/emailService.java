@@ -24,8 +24,10 @@ import java.util.logging.Logger;
 @Setter
 @NoArgsConstructor
 public class emailService {
+
     @Autowired
     private properties properties;
+
     @Autowired
     private configurationServiceImpl configurationServiceImpl;
 

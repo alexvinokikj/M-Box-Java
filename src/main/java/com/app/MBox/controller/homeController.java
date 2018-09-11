@@ -17,8 +17,6 @@ public class homeController {
 
     @GetMapping("/homepage")
     public String home() {
-
-        System.out.println(bCryptPasswordEncoder.encode("admin123") + " OVA E PASSWORDOT");
         return "home";
     }
 

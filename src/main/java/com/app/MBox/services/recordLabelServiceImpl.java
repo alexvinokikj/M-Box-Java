@@ -6,6 +6,7 @@ import com.app.MBox.aditional.rolesEnum;
 import com.app.MBox.core.model.*;
 import com.app.MBox.core.repository.recordLabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,10 @@ public class recordLabelServiceImpl implements recordLabelService {
     emailTemplateService emailTemplateService;
     @Autowired
     properties properties;
+    @Autowired
+    emailService emailService;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public recordLabel findByUserId(int userId) {
         return recordLabelRepository.findByUserId(userId);
@@ -52,7 +57,6 @@ public class recordLabelServiceImpl implements recordLabelService {
 
         String appUrl=String.format("%s://%s%sjoinIfInvited?token=%s",request.getScheme(),request.getServerName(),properties.getPORT(),verificationToken.getToken()); //part :8080 wont be needed in stage
         List<String> list=userServiceImpl.parsingEmailBody(user,appUrl,emailTemplateEnum.recordLabelSignUp.toString());
-        emailService emailService=new emailService();
         emailService.sendMail(user.getName(),user.getEmail(),list.get(1),list.get(0));
 
         return recordLabel;
@@ -78,27 +82,25 @@ public class recordLabelServiceImpl implements recordLabelService {
     public void setRecordLabelPassword(String token, String password) {
         users user=verificationTokenServiceImpl.findByToken(token);
         user.setActivated(true);
-        user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         userServiceImpl.saveUser(user);
         verificationTokenServiceImpl.delete(token);
     }
 
     public void deleteRecordLabel(String email) {
-        //delete record label send email that is deleted find all his artist delete them and send them emails and delete record label user roles
         users user=userServiceImpl.findByEmail(email);
         recordLabel recordLabel=findByUserId(user.getId());
         List<artist> artists=artistServiceImpl.findAllArtists(recordLabel.getId());
-        emailService emailService=new emailService();
         for (artist artist:artists) {
             artist.setDeleted(true);
             emailTemplate emailTemplate=emailTemplateService.findByName(emailTemplateEnum.deleteArtistMail.toString());
             String body=emailTemplate.getBody().replace(properties.getNAME(),user.getName());
-            emailService.sendMail("MBox",artist.getUser().getEmail(),emailTemplate.getSubject(),body);  //only for testing properties.getToEmailAdress()
+            emailService.sendMail("MBox",artist.getUser().getEmail(),emailTemplate.getSubject(),body);
             artistServiceImpl.save(artist);
         }
         emailTemplate emailTemplate=emailTemplateService.findByName(emailTemplateEnum.deleteRecordLabelMail.toString());
         String body=emailTemplate.getBody().replace(properties.getNAME(),user.getName());
-        emailService.sendMail("MBox",user.getEmail(),emailTemplate.getSubject(),body);                  //only for testing properties.getToEmailAdress()
+        emailService.sendMail("MBox",user.getEmail(),emailTemplate.getSubject(),body);
         userRoles userRoles=userRolesServiceImpl.findByUserId(user.getId());
             if(userRoles!=null) {
                 userRolesServiceImpl.deleteUserRoles(userRoles);

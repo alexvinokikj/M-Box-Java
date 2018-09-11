@@ -42,6 +42,8 @@ public class userServiceImpl implements userService {
     private recordLabelArtistsServiceServiceImpl recordLabelArtistsServiceImpl;
     @Autowired
     private recordLabelServiceImpl recordLabelServiceImpl;
+    @Autowired
+    private emailService emailService;
 
     public users findByEmail(String email) {
 
@@ -71,10 +73,9 @@ public class userServiceImpl implements userService {
             userRoles.setRole(role);
             userRolesServiceImpl.saveUserRoles(userRoles);
             verificationToken verificationToken=verificationTokenServiceImpl.createToken(user);
-            String appUrl=String.format("%s://%s%sconfirm?token=%s",request.getScheme(),request.getServerName(),properties.getPORT(),verificationToken.getToken()); //part :8080 wont be needed in stage
+            String appUrl=String.format("%s://%s%sconfirm?token=%s",request.getScheme(),request.getServerName(),properties.getPORT(),verificationToken.getToken());
             List <String> list=parsingEmailBody(user,appUrl,emailTemplateEnum.verificationMail.toString());
-            emailService emailService=new emailService();
-            emailService.sendMail(user.getName(),properties.getToEmailAdress(),list.get(1),list.get(0));
+            emailService.sendMail(user.getName(),user.getEmail(),list.get(1),list.get(0));
 
         return user;
     }
@@ -106,8 +107,7 @@ public class userServiceImpl implements userService {
             verificationToken verificationToken=verificationTokenServiceImpl.createToken(user);
             String appUrl=String.format("%s://%s%sresetPassword?token=%s",request.getScheme(),request.getServerName(),properties.getPORT(),verificationToken.getToken());
             List <String> list=parsingEmailBody(user,appUrl,emailTemplateEnum.forgotPassword.toString());
-            emailService emailService=new emailService();
-            emailService.sendMail(user.getName(),properties.getToEmailAdress(),list.get(1),list.get(0));
+            emailService.sendMail(user.getName(),user.getEmail(),list.get(1),list.get(0));
              return true;
 
         }
@@ -129,7 +129,6 @@ public class userServiceImpl implements userService {
 
     public List<recordLabelDto> findRecordLabels(int page,int size) {
         List<recordLabelDto> recordLabelDtos=new LinkedList<>();
-        //List<users> users=userRepository.findAllRecordLabels();
         List<users> users=userRepository.findRecordLabels(PageRequest.of(page,size));
         for(int i=0 ; i<users.size() ; i++) {
             recordLabelDto recordLabelDto=new recordLabelDto();
