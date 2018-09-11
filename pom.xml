@@ -41,21 +41,7 @@
                 production profile is prod, we must set the value of the build.profile.id 
                 property to prod.
             -->
-            <build.profile.id>prod</build.profile.id>
-        </properties>
-    </profile>
-    <!-- The configuration of the testing profile -->
-    <profile>
-        <id>test</id>
-        <properties>
-            <!--
-                Specifies the build.profile.id property that must be equal than the name of
-                the directory that contains the profile specific configuration file.
-                Because the name of the directory that contains the configuration file of the
-                testing profile is test, we must set the value of the build.profile.id 
-                property to test.
-            -->
-            <build.profile.id>test</build.profile.id>
+            <build.profile.id>stage</build.profile.id>
         </properties>
     </profile>
 </profiles>
